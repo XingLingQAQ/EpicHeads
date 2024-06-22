@@ -3,8 +3,10 @@ package com.craftaro.epicheads.head;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.settings.Settings;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.ProfileInputType;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.Profileable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -117,11 +119,7 @@ public class Head {
         ItemStack item = XMaterial.PLAYER_HEAD.parseItem();
         ItemMeta meta = item.getItemMeta();
 
-        if (this.url.contains("textures.minecraft.net")) {
-            SkullUtils.applySkin(meta, this.url.substring(this.url.indexOf("/texture/") + "/texture/".length()));
-        } else {
-            SkullUtils.applySkin(meta, this.url);
-        }
+        XSkull.of(meta).profile(new Profileable.StringProfileable(this.url, ProfileInputType.get(this.url))).apply();
         meta.setDisplayName(getHeadItemName(favorite));
         meta.setLore(getHeadItemLore(free));
 
