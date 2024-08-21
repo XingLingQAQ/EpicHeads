@@ -1,5 +1,6 @@
 package com.craftaro.epicheads.gui;
 
+import com.craftaro.core.chat.AdventureUtils;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.gui.GuiUtils;
@@ -63,22 +64,22 @@ public class GUIHeads extends Gui {
 
         switch (this.type) {
             case SEARCH:
-                name = this.plugin.getLocale().getMessage("general.word.query").getMessage() + ": " + this.query;
+                name = this.plugin.getLocale().getMessage("general.word.query").toText() + ": " + this.query;
                 break;
             case CATEGORY:
                 name = category.getName();
                 break;
             case FAVORITES:
-                name = this.plugin.getLocale().getMessage("general.word.favorites").getMessage();
+                name = this.plugin.getLocale().getMessage("general.word.favorites").toText();
                 break;
             case PACK:
-                name = this.plugin.getLocale().getMessage("general.phrase.latestpack").getMessage();
+                name = this.plugin.getLocale().getMessage("general.phrase.latestpack").toText();
                 break;
         }
 
         this.pages = (int) Math.ceil(numHeads / 45.0);
 
-        this.setTitle(name + " (" + numHeads + ") " + this.plugin.getLocale().getMessage("general.word.page").getMessage() + " " + (this.page) + "/" + (this.pages));
+        this.setTitle(name + " (" + numHeads + ") " + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page) + "/" + (this.pages));
     }
 
     private void showPage() {
@@ -88,7 +89,7 @@ public class GUIHeads extends Gui {
 
         if (this.page - 3 >= 1) {
             setButton(0, GuiUtils.createButtonItem(XMaterial.ARROW, this.page - 3,
-                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").getMessage() + " " + (this.page - 3)),
+                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page - 3)),
                     (event) -> changePage(-3));
         } else {
             clearActions(0);
@@ -97,7 +98,7 @@ public class GUIHeads extends Gui {
 
         if (this.page - 2 >= 1) {
             setButton(1, GuiUtils.createButtonItem(XMaterial.ARROW, this.page - 2,
-                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").getMessage() + " " + (this.page - 2)),
+                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page - 2)),
                     (event) -> changePage(-2));
         } else {
             clearActions(1);
@@ -106,7 +107,7 @@ public class GUIHeads extends Gui {
 
         if (this.page > 1) {
             setButton(2, GuiUtils.createButtonItem(XMaterial.ARROW, this.page - 1,
-                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").getMessage() + " " + (this.page - 1)),
+                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page - 1)),
                     (event) -> changePage(-1));
         } else {
             clearActions(2);
@@ -118,14 +119,14 @@ public class GUIHeads extends Gui {
                 (event) -> doSearch(this.plugin, this, this.guiManager, event.player));
 
         setButton(4, GuiUtils.createButtonItem(XMaterial.MAP, this.page,
-                this.plugin.getLocale().getMessage("gui.heads.categories").getMessage()), (event) -> this.guiManager.showGUI(this.player, new GUIOverview(event.player)));
+                this.plugin.getLocale().getMessage("gui.heads.categories").toText()), (event) -> this.guiManager.showGUI(this.player, new GUIOverview(event.player)));
 
         if (pageHeads.size() > 1) {
             setButton(5, GuiUtils.createButtonItem(XMaterial.COMPASS,
                             this.plugin.getLocale().getMessage("gui.heads.refine").getMessage()),
                     (event) -> {
                         exit();
-                        ChatPrompt.showPrompt(this.plugin, event.player, this.plugin.getLocale().getMessage("general.search.refine").getPrefixedMessage(), promptEvent -> {
+                        ChatPrompt.showPrompt(this.plugin, event.player, AdventureUtils.toLegacy(this.plugin.getLocale().getMessage("general.search.refine").getPrefixedMessage()), promptEvent -> {
                             this.page = 1;
                             this.heads = this.heads.stream().filter(head -> head.getName().toLowerCase()
                                     .contains(promptEvent.getMessage().toLowerCase())).collect(Collectors.toList());
@@ -138,7 +139,7 @@ public class GUIHeads extends Gui {
                             showPage();
                             this.guiManager.showGUI(event.player, this);
                         }).setOnCancel(() -> {
-                            event.player.sendMessage(this.plugin.getLocale().getMessage("general.search.canceled").getPrefixedMessage());
+                            this.plugin.getLocale().getMessage("general.search.canceled").sendPrefixedMessage(event.player);
                         });
                     });
         }
@@ -186,7 +187,7 @@ public class GUIHeads extends Gui {
             ItemStack item = head.asItemStack(favorites.contains(head.getUrl()), free);
             ItemMeta meta = item.getItemMeta();
             List<String> lore = item.getItemMeta().getLore();
-            lore.add(this.plugin.getLocale().getMessage("gui.heads.delete").getMessage());
+            lore.add(this.plugin.getLocale().getMessage("gui.heads.delete").toText());
             meta.setLore(lore);
             item.setItemMeta(meta);
 
@@ -213,7 +214,7 @@ public class GUIHeads extends Gui {
                         if (EconomyManager.hasBalance(this.player, cost)) {
                             EconomyManager.withdrawBalance(this.player, cost);
                         } else {
-                            this.player.sendMessage(this.plugin.getLocale().getMessage("event.buyhead.cannotafford").getMessage());
+                            this.player.sendMessage(this.plugin.getLocale().getMessage("event.buyhead.cannotafford").toText());
                             return;
                         }
                     } else {
@@ -242,7 +243,7 @@ public class GUIHeads extends Gui {
         if (activeGui != null) {
             activeGui.exit();
         }
-        ChatPrompt.showPrompt(plugin, player, plugin.getLocale().getMessage("general.search.global").getPrefixedMessage(), response -> {
+        ChatPrompt.showPrompt(plugin, player, AdventureUtils.toLegacy(plugin.getLocale().getMessage("general.search.global").getPrefixedMessage()), response -> {
             List<Head> searchHeads = plugin.getHeadManager().getHeads().stream()
                     .filter(head -> head.getName().toLowerCase().contains(response.getMessage().toLowerCase()))
                     .filter(head -> player.hasPermission("epicheads.category." + head.getCategory().getName().replace(" ", "_")))

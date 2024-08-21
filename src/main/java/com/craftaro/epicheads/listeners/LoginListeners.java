@@ -52,7 +52,7 @@ public class LoginListeners implements Listener {
             return;
         }
 
-        String categoryName = this.plugin.getLocale().getMessage("general.word.playerheads").getMessage();
+        String categoryName = this.plugin.getLocale().getMessage("general.word.playerheads").toText();
         Category category = headManager.getOrCreateCategoryByName(categoryName);
 
         Head head = new Head(headManager.getNextLocalId(), player.getName(), url, category, true, null, (byte) 0);

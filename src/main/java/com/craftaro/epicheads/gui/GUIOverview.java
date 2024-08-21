@@ -2,6 +2,7 @@ package com.craftaro.epicheads.gui;
 
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
@@ -41,7 +42,7 @@ public class GUIOverview extends Gui {
     private void showPage() {
         setButton(4, GuiUtils.createButtonItem(XMaterial.GOLDEN_APPLE,
                         this.plugin.getLocale().getMessage("gui.overview.viewfavorites").getMessage(),
-                        this.plugin.getLocale().getMessage("gui.overview.favoriteslore").getMessage().split("\\|")),
+                        this.plugin.getLocale().getMessage("gui.overview.favoriteslore").getMessageLines('|')),
                 (event) -> this.guiManager.showGUI(this.player, new GUIHeads(this.plugin, this.player, null, GUIHeads.QueryTypes.FAVORITES,
                         this.plugin.getPlayerManager().getPlayer(this.player).getFavoritesAsHeads())));
 
@@ -84,10 +85,11 @@ public class GUIOverview extends Gui {
 
             ;
 
-            ItemStack buttonItem = XSkull
-                    .createItem()
-                    .profile(new Profileable.StringProfileable(firstHead.getUrl(), ProfileInputType.get(firstHead.getUrl())))
-                    .apply();
+//            ItemStack buttonItem = XSkull
+//                    .createItem()
+//                    .profile(new Profileable.StringProfileable(firstHead.getUrl(), ProfileInputType.get(firstHead.getUrl())))
+//                    .apply();
+            ItemStack buttonItem = SkullItemCreator.byTextureUrl(firstHead.getUrl());
 
             setButton(i + 10 + add, GuiUtils.createButtonItem(buttonItem,
                             this.plugin.getLocale().getMessage("gui.overview.headname")
@@ -115,7 +117,7 @@ public class GUIOverview extends Gui {
 
             setButton(41, GuiUtils.createButtonItem(discordButtonItem,
                             this.plugin.getLocale().getMessage("gui.overview.discord").getMessage(),
-                            this.plugin.getLocale().getMessage("gui.overview.discordlore").getMessage().split("\\|")),
+                            this.plugin.getLocale().getMessage("gui.overview.discordlore").getMessageLines('|')),
                     (event) -> {
                         this.plugin.getLocale().newMessage("&9https://songoda.com/discord").sendPrefixedMessage(this.player);
                         exit();

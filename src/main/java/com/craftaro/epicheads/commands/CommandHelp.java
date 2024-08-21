@@ -1,7 +1,8 @@
 package com.craftaro.epicheads.commands;
 
-import com.craftaro.core.chat.ChatMessage;
+import com.craftaro.core.chat.AdventureUtils;
 import com.craftaro.core.commands.AbstractCommand;
+import com.craftaro.core.third_party.net.kyori.adventure.text.Component;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import org.bukkit.ChatColor;
@@ -20,9 +21,9 @@ public class CommandHelp extends AbstractCommand {
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
         sender.sendMessage("");
-        new ChatMessage().fromText(String.format("#ff8080&l%s &8» &7Version %s Created with <3 by #ec4e74&l&oS#fa5b65&l&oo#ff6c55&l&on#ff7f44&l&og#ff9432&l&oo#ffaa1e&l&od#f4c009&l&oa",
-                        this.plugin.getDescription().getName(), this.plugin.getDescription().getVersion()))
-                .sendTo(sender);
+        Component component = AdventureUtils.formatComponent(String.format("<color:#ff8080>&l%s &8» &7Version %s Created with <3 by <gradient:#ec4e74:#f4c009><b><o>Songoda</o></b></gradient>",
+                this.plugin.getDescription().getName(), this.plugin.getDescription().getVersion()));
+        AdventureUtils.sendMessage(this.plugin, component, sender);
         sender.sendMessage("");
         sender.sendMessage(TextUtils.formatText("&7Welcome to EpicHeads! To get started try using the command /heads to access the heads panel."));
         sender.sendMessage("");
