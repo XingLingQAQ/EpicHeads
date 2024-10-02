@@ -2,7 +2,6 @@ package com.craftaro.epicheads.gui;
 
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
-import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
@@ -80,7 +79,7 @@ public class GUIOverview extends Gui {
                 continue;
             }
 
-            ItemStack buttonItem = SkullItemCreator.byTextureUrl(firstHead.getUrl());
+            ItemStack buttonItem = firstHead.asItemStack();
             setButton(i + 10 + add, GuiUtils.createButtonItem(buttonItem,
                             this.plugin.getLocale().getMessage("gui.overview.headname")
                                     .processPlaceholder("name", Color.getRandomColor() + category.getName())

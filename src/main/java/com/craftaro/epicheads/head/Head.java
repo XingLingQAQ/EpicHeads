@@ -99,7 +99,7 @@ public class Head {
     }
 
     public ItemStack asItemStack(boolean favorite, boolean free) {
-        ItemStack skull = SkullItemCreator.byTextureUrl(this.url);
+        ItemStack skull = createSkullAndAutoDetectInput(getUrl());
         ItemMeta meta = skull.getItemMeta();
         meta.setDisplayName(getHeadItemName(favorite));
         meta.setLore(getHeadItemLore(free));
@@ -155,5 +155,15 @@ public class Head {
                 ", local=" + this.local +
                 ", category=" + this.category +
                 '}';
+    }
+
+    private ItemStack createSkullAndAutoDetectInput(String urlThatIsNotInFactAnUrl) {
+        if (urlThatIsNotInFactAnUrl.startsWith("http://") || urlThatIsNotInFactAnUrl.startsWith("https://")) {
+            return SkullItemCreator.byTextureUrl(urlThatIsNotInFactAnUrl);
+        }
+        if (urlThatIsNotInFactAnUrl.matches("[A-Za-z0-9+/-]{100,}={0,3}")) {
+            return SkullItemCreator.byTextureValue(urlThatIsNotInFactAnUrl);
+        }
+        return SkullItemCreator.byTextureUrlHash(urlThatIsNotInFactAnUrl);
     }
 }
