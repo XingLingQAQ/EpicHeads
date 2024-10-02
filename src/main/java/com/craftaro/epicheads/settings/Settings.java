@@ -18,12 +18,6 @@ public class Settings {
             "restarts. With that said it is advised to keep this enabled.",
             "If however you enjoy living on the edge, feel free to turn it off.");
 
-    public static final ConfigSetting DISCORD = new ConfigSetting(CONFIG, "Main.Show Discord Button", true,
-            "This is the discord button displayed in the main GUI",
-            "Clicking this button will bring you to a discord where you can",
-            "add or remove heads to the global library this plugin uses.",
-            "AS well as get updates on future releases and features.");
-
     public static final ConfigSetting FREE_IN_CREATIVE = new ConfigSetting(CONFIG, "Main.Heads Free In Creative Mode", false,
             "Enabling this will make it so that a player can get all heads",
             "for free as long as they are in the creative game mode.");

@@ -93,21 +93,10 @@ public class GUIOverview extends Gui {
                                     GUIHeads.QueryTypes.CATEGORY, heads)));
         }
 
-        setButton(Settings.DISCORD.getBoolean() ? 39 : 40, GuiUtils.createButtonItem(XMaterial.COMPASS,
+        setButton(40, GuiUtils.createButtonItem(XMaterial.COMPASS,
                         this.plugin.getLocale().getMessage("gui.overview.search").getMessage()),
                 (event) -> GUIHeads.doSearch(this.plugin, this, this.guiManager, event.player));
 
-        if (Settings.DISCORD.getBoolean()) {
-            ItemStack discordButtonItem = SkullItemCreator.byTextureUrlHash("a3b183b148b9b4e2b158334aff3b5bb6c2c2dbbc4d67f76a7be856687a2b623");
-
-            setButton(41, GuiUtils.createButtonItem(discordButtonItem,
-                            this.plugin.getLocale().getMessage("gui.overview.discord").getMessage(),
-                            this.plugin.getLocale().getMessage("gui.overview.discordlore").getMessageLines('|')),
-                    (event) -> {
-                        this.plugin.getLocale().newMessage("&9https://songoda.com/discord").sendPrefixedMessage(this.player);
-                        exit();
-                    });
-        }
     }
 
     public enum Color {
