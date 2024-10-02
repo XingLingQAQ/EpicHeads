@@ -56,6 +56,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -232,15 +233,52 @@ public class EpicHeads extends SongodaPlugin {
     }
 
     private void downloadHeads() {
+        String[] categories = new String[]{
+                "alphabet",
+                "animals",
+                "blocks",
+                "decoration",
+                "food-drinks",
+                "humans",
+                "humanoid",
+                "miscellaneous",
+                "monsters",
+                "plants"
+        };
+
+        JSONParser parser = new JSONParser();
+        JSONArray jsonArray = new JSONArray();
+
+        int idCounter = 1;
+
         try {
-            InputStream is = new URL("https://craftaro.github.io/EpicHeads/heads.json").openStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            String jsonText = readAll(rd);
-            JSONParser parser = new JSONParser();
-            JSONArray json = (JSONArray) parser.parse(jsonText);
+            for (String category : categories) {
+                getLogger().info("Downloading data for " + category + "...");
+                String apiUrl = "https://minecraft-heads.com/scripts/api.php?cat=" + category + "&tags=true";
+                InputStream is = new URL(apiUrl).openStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+                String jsonText = readAll(rd);
+                JSONArray jsonCategoryArray = (JSONArray) parser.parse(jsonText);
+
+                for (Object o : jsonCategoryArray) {
+                    JSONObject entry = (JSONObject) o;
+                    String name = (String) entry.get("name");
+                    String value = (String) entry.get("value");
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", name);
+                    jsonObject.put("id", Integer.toString(idCounter++));
+                    jsonObject.put("url", value);
+                    jsonObject.put("tags", category);
+                    jsonObject.put("staff_picked", "0");
+                    jsonObject.put("pack", "standard");
+
+                    jsonArray.add(jsonObject);
+                }
+            }
 
             try (FileWriter file = new FileWriter(new File(getDataFolder(), "heads.json"))) {
-                file.write(json.toJSONString());
+                file.write(jsonArray.toJSONString());
             }
         } catch (Exception ex) {
             getLogger().warning("Failed to download heads: " + ex.getMessage());
