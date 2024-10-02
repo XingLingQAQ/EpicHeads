@@ -1,12 +1,12 @@
 package com.craftaro.epicheads.listeners;
 
+import com.craftaro.core.nms.Nms;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.settings.Settings;
 import com.craftaro.epicheads.utils.HeadType;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -38,7 +38,7 @@ public class DeathListeners implements Listener {
                     return;
                 }
 
-                String encodedStr = SkullUtils.getSkinValue(SkullUtils.getSkull(event.getEntity().getUniqueId()).getItemMeta());
+                String encodedStr = Nms.getImplementations().getPlayer().getProfile((Player) event.getEntity()).getTextureValue();
                 if (encodedStr == null) {
                     itemNew = XMaterial.PLAYER_HEAD.parseItem();
 

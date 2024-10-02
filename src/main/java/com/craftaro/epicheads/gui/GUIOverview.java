@@ -2,15 +2,14 @@ package com.craftaro.epicheads.gui;
 
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.settings.Settings;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.Random;
@@ -40,7 +39,7 @@ public class GUIOverview extends Gui {
     private void showPage() {
         setButton(4, GuiUtils.createButtonItem(XMaterial.GOLDEN_APPLE,
                         this.plugin.getLocale().getMessage("gui.overview.viewfavorites").getMessage(),
-                        this.plugin.getLocale().getMessage("gui.overview.favoriteslore").getMessage().split("\\|")),
+                        this.plugin.getLocale().getMessage("gui.overview.favoriteslore").getMessageLines('|')),
                 (event) -> this.guiManager.showGUI(this.player, new GUIHeads(this.plugin, this.player, null, GUIHeads.QueryTypes.FAVORITES,
                         this.plugin.getPlayerManager().getPlayer(this.player).getFavoritesAsHeads())));
 
@@ -81,11 +80,7 @@ public class GUIOverview extends Gui {
                 continue;
             }
 
-            ItemStack buttonItem = XMaterial.PLAYER_HEAD.parseItem();
-            ItemMeta buttonMeta = buttonItem.getItemMeta();
-            SkullUtils.applySkin(buttonMeta, firstHead.getUrl());
-            buttonItem.setItemMeta(buttonMeta);
-
+            ItemStack buttonItem = SkullItemCreator.byTextureUrl(firstHead.getUrl());
             setButton(i + 10 + add, GuiUtils.createButtonItem(buttonItem,
                             this.plugin.getLocale().getMessage("gui.overview.headname")
                                     .processPlaceholder("name", Color.getRandomColor() + category.getName())
@@ -105,14 +100,11 @@ public class GUIOverview extends Gui {
                 (event) -> GUIHeads.doSearch(this.plugin, this, this.guiManager, event.player));
 
         if (Settings.DISCORD.getBoolean()) {
-            ItemStack discordButtonItem = XMaterial.PLAYER_HEAD.parseItem();
-            ItemMeta discordButtonMeta = discordButtonItem.getItemMeta();
-            SkullUtils.applySkin(discordButtonMeta, "a3b183b148b9b4e2b158334aff3b5bb6c2c2dbbc4d67f76a7be856687a2b623");
-            discordButtonItem.setItemMeta(discordButtonMeta);
+            ItemStack discordButtonItem = SkullItemCreator.byTextureUrlHash("a3b183b148b9b4e2b158334aff3b5bb6c2c2dbbc4d67f76a7be856687a2b623");
 
             setButton(41, GuiUtils.createButtonItem(discordButtonItem,
                             this.plugin.getLocale().getMessage("gui.overview.discord").getMessage(),
-                            this.plugin.getLocale().getMessage("gui.overview.discordlore").getMessage().split("\\|")),
+                            this.plugin.getLocale().getMessage("gui.overview.discordlore").getMessageLines('|')),
                     (event) -> {
                         this.plugin.getLocale().newMessage("&9https://songoda.com/discord").sendPrefixedMessage(this.player);
                         exit();

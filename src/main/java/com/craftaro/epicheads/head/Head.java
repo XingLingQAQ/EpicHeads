@@ -1,10 +1,9 @@
 package com.craftaro.epicheads.head;
 
+import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.settings.Settings;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -114,19 +113,13 @@ public class Head {
     }
 
     public ItemStack asItemStack(boolean favorite, boolean free) {
-        ItemStack item = XMaterial.PLAYER_HEAD.parseItem();
-        ItemMeta meta = item.getItemMeta();
-
-        if (this.url.contains("textures.minecraft.net")) {
-            SkullUtils.applySkin(meta, this.url.substring(this.url.indexOf("/texture/") + "/texture/".length()));
-        } else {
-            SkullUtils.applySkin(meta, this.url);
-        }
+        ItemStack skull = SkullItemCreator.byTextureUrl(this.url);
+        ItemMeta meta = skull.getItemMeta();
         meta.setDisplayName(getHeadItemName(favorite));
         meta.setLore(getHeadItemLore(free));
 
-        item.setItemMeta(meta);
-        return item;
+        skull.setItemMeta(meta);
+        return skull;
     }
 
     public String getHeadItemName(boolean favorite) {
@@ -138,16 +131,16 @@ public class Head {
         double cost = Settings.HEAD_COST.getDouble();
         List<String> lore = new ArrayList<>();
         if (this.staffPicked == 1) {
-            lore.add(plugin.getLocale().getMessage("general.head.staffpicked").getMessage());
+            lore.add(plugin.getLocale().getMessage("general.head.staffpicked").toText());
         }
         lore.add(plugin.getLocale().getMessage("general.head.id")
-                .processPlaceholder("id", this.id).getMessage());
+                .processPlaceholder("id", this.id).toText());
         if (!free) {
             String fcost = Settings.ECONOMY_PLUGIN.getString().equalsIgnoreCase("item")
                     ? cost + " " + Settings.ITEM_TOKEN_TYPE.getString()
                     : /* EconomyManager.formatEconomy(cost) */ String.valueOf(cost);  // FIXME: EconomyManager#formatEconomy etc only work in some languages (. vs ,) and only for the currency symbol $
             lore.add(plugin.getLocale().getMessage("general.head.cost")
-                    .processPlaceholder("cost", fcost).getMessage());
+                    .processPlaceholder("cost", fcost).toText());
         }
         return lore;
     }

@@ -4,7 +4,7 @@ import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.compatibility.CompatibleHand;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicheads.EpicHeads;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,14 +29,14 @@ public class CommandUrl extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        String encodedStr = SkullUtils.getSkinValue(item.getItemMeta());
+        String encodedStr = XSkull.of(item).getProfileValue();
         if (encodedStr == null) {
             return ReturnType.FAILURE;
         }
 
         String url = ItemUtils.getDecodedTexture(encodedStr);
 
-        player.sendMessage(this.plugin.getLocale().newMessage("http://textures.minecraft.net/texture/" + url).getPrefixedMessage());
+        this.plugin.getLocale().newMessage("http://textures.minecraft.net/texture/" + url).sendPrefixedMessage(player);
         return ReturnType.SUCCESS;
     }
 

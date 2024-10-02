@@ -4,8 +4,8 @@ import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.utils.ItemEconomy;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -32,7 +32,7 @@ public class ItemListeners implements Listener {
             return;
         }
 
-        String encodedStr = SkullUtils.getSkinValue(item.getItemMeta());
+        String encodedStr = XSkull.of(item).getProfileString();
         if (encodedStr == null) {
             return;
         }

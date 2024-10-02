@@ -1,12 +1,12 @@
 package com.craftaro.epicheads.listeners;
 
+import com.craftaro.core.nms.Nms;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.head.HeadManager;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,7 +33,7 @@ public class LoginListeners implements Listener {
         Player player = event.getPlayer();
         HeadManager headManager = this.plugin.getHeadManager();
 
-        String encodedStr = SkullUtils.getSkinValue(SkullUtils.getSkull(player.getUniqueId()).getItemMeta());
+        String encodedStr = Nms.getImplementations().getPlayer().getProfile(player).getTextureValue();
         if (encodedStr == null) {
             return;
         }
@@ -51,7 +51,7 @@ public class LoginListeners implements Listener {
             return;
         }
 
-        String categoryName = this.plugin.getLocale().getMessage("general.word.playerheads").getMessage();
+        String categoryName = this.plugin.getLocale().getMessage("general.word.playerheads").toText();
         Category category = headManager.getOrCreateCategoryByName(categoryName);
 
         Head head = new Head(headManager.getNextLocalId(), player.getName(), url, category, true, null, (byte) 0);

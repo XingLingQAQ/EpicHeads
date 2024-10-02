@@ -2,6 +2,7 @@ package com.craftaro.epicheads.database;
 
 import com.craftaro.core.database.DataManager;
 import com.craftaro.core.database.DatabaseConnector;
+import com.craftaro.core.database.DatabaseType;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.players.EPlayer;
@@ -54,17 +55,28 @@ public class DataHelper {
         Gson gson = new Gson();
         dataManager.getAsyncPool().submit(() -> {
             try (Connection connection = databaseConnector.getConnection()) {
-                String insertPlayer = "REPLACE INTO " + getTablePrefix() + "players (uuid, favorites) VALUES (?, ?)";
+                String sql;
+                boolean isH2 = databaseConnector.getType().equals(DatabaseType.H2);
+
+                if (!isH2) {
+                    sql = "INSERT INTO " + getTablePrefix() + "players (uuid, favorites) VALUES (?, ?) ON DUPLICATE KEY UPDATE favorites = ?";
+                } else {
+                    sql = "MERGE INTO " + getTablePrefix() + "players (uuid, favorites) KEY(uuid) VALUES (?, ?)";
+                }
+
                 String selectPlayers = "SELECT * FROM " + getTablePrefix() + "players WHERE uuid = ?";
 
-                try (PreparedStatement insert = connection.prepareStatement(insertPlayer);
-                     PreparedStatement statement = connection.prepareStatement(selectPlayers)) {
-                    insert.setString(1, player.getUniqueId().toString());
-                    insert.setString(2, gson.toJson(new ArrayList<>()));
-                    insert.execute();
-
+                try (PreparedStatement statement = connection.prepareStatement(sql);
+                     PreparedStatement selectStatement = connection.prepareStatement(selectPlayers)) {
                     statement.setString(1, player.getUniqueId().toString());
-                    ResultSet result = statement.executeQuery();
+                    statement.setString(2, gson.toJson(new ArrayList<>()));
+                    if (!isH2) {
+                        statement.setString(3, gson.toJson(new ArrayList<>()));
+                    }
+                    statement.execute();
+
+                    selectStatement.setString(1, player.getUniqueId().toString());
+                    ResultSet result = selectStatement.executeQuery();
                     if (result.next()) {
                         UUID uuid = UUID.fromString(result.getString("uuid"));
                         List<String> favorites = gson.fromJson(result.getString("favorites"), new TypeToken<List<String>>() {
