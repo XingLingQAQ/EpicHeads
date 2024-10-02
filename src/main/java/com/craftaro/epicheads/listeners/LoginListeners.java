@@ -1,12 +1,12 @@
 package com.craftaro.epicheads.listeners;
 
+import com.craftaro.core.nms.Nms;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.head.HeadManager;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.Profileable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,7 +33,7 @@ public class LoginListeners implements Listener {
         Player player = event.getPlayer();
         HeadManager headManager = this.plugin.getHeadManager();
 
-        String encodedStr = Profileable.of(player.getUniqueId()).getProfileValue();
+        String encodedStr = Nms.getImplementations().getPlayer().getProfile(player).getTextureValue();
         if (encodedStr == null) {
             return;
         }

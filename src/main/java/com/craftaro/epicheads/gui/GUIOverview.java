@@ -8,9 +8,6 @@ import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.settings.Settings;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.ProfileInputType;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.Profileable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -83,14 +80,7 @@ public class GUIOverview extends Gui {
                 continue;
             }
 
-            ;
-
-//            ItemStack buttonItem = XSkull
-//                    .createItem()
-//                    .profile(new Profileable.StringProfileable(firstHead.getUrl(), ProfileInputType.get(firstHead.getUrl())))
-//                    .apply();
             ItemStack buttonItem = SkullItemCreator.byTextureUrl(firstHead.getUrl());
-
             setButton(i + 10 + add, GuiUtils.createButtonItem(buttonItem,
                             this.plugin.getLocale().getMessage("gui.overview.headname")
                                     .processPlaceholder("name", Color.getRandomColor() + category.getName())
@@ -110,10 +100,7 @@ public class GUIOverview extends Gui {
                 (event) -> GUIHeads.doSearch(this.plugin, this, this.guiManager, event.player));
 
         if (Settings.DISCORD.getBoolean()) {
-            ItemStack discordButtonItem = XSkull
-                    .createItem()
-                    .profile(new Profileable.StringProfileable("a3b183b148b9b4e2b158334aff3b5bb6c2c2dbbc4d67f76a7be856687a2b623", ProfileInputType.TEXTURE_HASH))
-                    .apply();
+            ItemStack discordButtonItem = SkullItemCreator.byTextureUrlHash("a3b183b148b9b4e2b158334aff3b5bb6c2c2dbbc4d67f76a7be856687a2b623");
 
             setButton(41, GuiUtils.createButtonItem(discordButtonItem,
                             this.plugin.getLocale().getMessage("gui.overview.discord").getMessage(),

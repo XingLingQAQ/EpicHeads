@@ -68,7 +68,7 @@ public class CommandGive extends AbstractCommand {
                             .processPlaceholder("name", head.get().getName()).sendPrefixedMessage(pl);
                 }
                 this.plugin.getLocale().getMessage("command.give.success")
-                        .processPlaceholder("player", this.plugin.getLocale().getMessage("general.word.everyone").getMessage())
+                        .processPlaceholder("player", this.plugin.getLocale().getMessage("general.word.everyone").toText())
                         .processPlaceholder("name", head.get().getName())
                         .sendPrefixedMessage(sender);
             } else {
