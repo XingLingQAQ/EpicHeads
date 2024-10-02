@@ -143,7 +143,7 @@ public class GUIHeads extends Gui {
 
         if (this.page + 1 <= this.pages) {
             setButton(6, GuiUtils.createButtonItem(XMaterial.ARROW, this.page + 1,
-                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").getMessage() + " " + (this.page + 1)),
+                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page + 1)),
                     (event) -> changePage(+1));
         } else {
             clearActions(6);
@@ -152,7 +152,7 @@ public class GUIHeads extends Gui {
 
         if (this.page + 2 <= this.pages) {
             setButton(7, GuiUtils.createButtonItem(XMaterial.ARROW, this.page + 2,
-                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").getMessage() + " " + (this.page + 2)),
+                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page + 2)),
                     (event) -> changePage(+2));
         } else {
             clearActions(7);
@@ -161,7 +161,7 @@ public class GUIHeads extends Gui {
 
         if (this.page + 3 <= this.pages) {
             setButton(8, GuiUtils.createButtonItem(XMaterial.ARROW, this.page + 3,
-                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").getMessage() + " " + (this.page + 3)),
+                            ChatColor.RED.toString() + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page + 3)),
                     (event) -> changePage(+3));
         } else {
             clearActions(8);
