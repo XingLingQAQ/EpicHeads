@@ -37,7 +37,7 @@ public class CommandAdd extends AbstractCommand {
         }
 
         Category category = headManager.getOrCreateCategoryByName(categoryStr);
-        Head head = new Head(headManager.getNextLocalId(), name, url, category, true, null, (byte) 0);
+        Head head = new Head(headManager.getNextLocalId(), name, url, category, true);
         headManager.addLocalHead(head);
         DataHelper.createLocalHead(head);
 

@@ -72,9 +72,6 @@ public class GUIHeads extends Gui {
             case FAVORITES:
                 name = this.plugin.getLocale().getMessage("general.word.favorites").toText();
                 break;
-            case PACK:
-                name = this.plugin.getLocale().getMessage("general.phrase.latestpack").toText();
-                break;
         }
 
         this.pages = (int) Math.ceil(numHeads / 45.0);
@@ -255,6 +252,6 @@ public class GUIHeads extends Gui {
     }
 
     public enum QueryTypes {
-        SEARCH, CATEGORY, FAVORITES, PACK
+        SEARCH, CATEGORY, FAVORITES
     }
 }

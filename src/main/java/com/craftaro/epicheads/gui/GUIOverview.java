@@ -69,7 +69,7 @@ public class GUIOverview extends Gui {
 
             Category category = categories.get(i);
 
-            List<Head> heads = category.isLatestPack() ? this.plugin.getHeadManager().getLatestPack() : this.plugin.getHeadManager().getHeadsByCategory(category);
+            List<Head> heads = this.plugin.getHeadManager().getHeadsByCategory(category);
             if (heads.isEmpty()) {
                 continue;
             }
@@ -85,14 +85,12 @@ public class GUIOverview extends Gui {
                             this.plugin.getLocale().getMessage("gui.overview.headname")
                                     .processPlaceholder("name", Color.getRandomColor() + category.getName())
                                     .getMessage(),
-                            category.isLatestPack() ? this.plugin.getLocale().getMessage("gui.overview.packlore")
-                                    .processPlaceholder("pack", firstHead.getPack()).getMessage()
-                                    : this.plugin.getLocale().getMessage("gui.overview.headlore")
+                            this.plugin.getLocale().getMessage("gui.overview.headlore")
                                     .processPlaceholder("count", String.format("%,d", category.getCount()))
                                     .getMessage()),
                     (event) ->
-                            this.guiManager.showGUI(this.player, new GUIHeads(this.plugin, this.player, category.isLatestPack() ? category.getName() : null,
-                                    category.isLatestPack() ? GUIHeads.QueryTypes.PACK : GUIHeads.QueryTypes.CATEGORY, heads)));
+                            this.guiManager.showGUI(this.player, new GUIHeads(this.plugin, this.player, null,
+                                    GUIHeads.QueryTypes.CATEGORY, heads)));
         }
 
         setButton(Settings.DISCORD.getBoolean() ? 39 : 40, GuiUtils.createButtonItem(XMaterial.COMPASS,

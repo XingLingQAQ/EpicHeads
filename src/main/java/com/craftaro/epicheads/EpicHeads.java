@@ -190,9 +190,7 @@ public class EpicHeads extends SongodaPlugin {
                                 row.get("name").asString(),
                                 row.get("url").asString(),
                                 category,
-                                true,
-                                null,
-                                (byte) 0);
+                                true);
 
                         DataHelper.createLocalHead(head);
                     }
@@ -269,10 +267,7 @@ public class EpicHeads extends SongodaPlugin {
                     jsonObject.put("name", name);
                     jsonObject.put("id", Integer.toString(idCounter++));
                     jsonObject.put("url", value);
-                    jsonObject.put("tags", category);
-                    jsonObject.put("staff_picked", "0");
-                    jsonObject.put("pack", "standard");
-
+                    jsonObject.put("category", category);
                     jsonArray.add(jsonObject);
                 }
             }
@@ -288,7 +283,6 @@ public class EpicHeads extends SongodaPlugin {
     private boolean loadHeads() {
         try {
             this.headManager.clear();
-            this.headManager.addCategory(new Category(getLocale().getMessage("general.word.latestpack").toText(), true));
 
             JSONParser parser = new JSONParser();
             JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(getDataFolder() + "/heads.json"));
@@ -302,7 +296,7 @@ public class EpicHeads extends SongodaPlugin {
                     continue;
                 }
 
-                String categoryName = (String) jsonObject.get("tags");
+                String categoryName = (String) jsonObject.get("category");
                 Category category = this.headManager.getOrCreateCategoryByName(categoryName);
 
                 Head head = new Head(
@@ -310,9 +304,7 @@ public class EpicHeads extends SongodaPlugin {
                         headName,
                         (String) jsonObject.get("url"),
                         category,
-                        false,
-                        headPack,
-                        Byte.parseByte((String) jsonObject.get("staff_picked"))
+                        false
                 );
                 this.headManager.addHead(head);
             }
