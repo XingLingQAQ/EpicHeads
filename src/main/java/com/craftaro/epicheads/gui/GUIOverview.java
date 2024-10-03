@@ -2,7 +2,6 @@ package com.craftaro.epicheads.gui;
 
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
-import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
@@ -69,7 +68,7 @@ public class GUIOverview extends Gui {
 
             Category category = categories.get(i);
 
-            List<Head> heads = category.isLatestPack() ? this.plugin.getHeadManager().getLatestPack() : this.plugin.getHeadManager().getHeadsByCategory(category);
+            List<Head> heads = this.plugin.getHeadManager().getHeadsByCategory(category);
             if (heads.isEmpty()) {
                 continue;
             }
@@ -80,36 +79,23 @@ public class GUIOverview extends Gui {
                 continue;
             }
 
-            ItemStack buttonItem = SkullItemCreator.byTextureUrl(firstHead.getUrl());
+            ItemStack buttonItem = firstHead.asItemStack();
             setButton(i + 10 + add, GuiUtils.createButtonItem(buttonItem,
                             this.plugin.getLocale().getMessage("gui.overview.headname")
                                     .processPlaceholder("name", Color.getRandomColor() + category.getName())
                                     .getMessage(),
-                            category.isLatestPack() ? this.plugin.getLocale().getMessage("gui.overview.packlore")
-                                    .processPlaceholder("pack", firstHead.getPack()).getMessage()
-                                    : this.plugin.getLocale().getMessage("gui.overview.headlore")
+                            this.plugin.getLocale().getMessage("gui.overview.headlore")
                                     .processPlaceholder("count", String.format("%,d", category.getCount()))
                                     .getMessage()),
                     (event) ->
-                            this.guiManager.showGUI(this.player, new GUIHeads(this.plugin, this.player, category.isLatestPack() ? category.getName() : null,
-                                    category.isLatestPack() ? GUIHeads.QueryTypes.PACK : GUIHeads.QueryTypes.CATEGORY, heads)));
+                            this.guiManager.showGUI(this.player, new GUIHeads(this.plugin, this.player, null,
+                                    GUIHeads.QueryTypes.CATEGORY, heads)));
         }
 
-        setButton(Settings.DISCORD.getBoolean() ? 39 : 40, GuiUtils.createButtonItem(XMaterial.COMPASS,
+        setButton(40, GuiUtils.createButtonItem(XMaterial.COMPASS,
                         this.plugin.getLocale().getMessage("gui.overview.search").getMessage()),
                 (event) -> GUIHeads.doSearch(this.plugin, this, this.guiManager, event.player));
 
-        if (Settings.DISCORD.getBoolean()) {
-            ItemStack discordButtonItem = SkullItemCreator.byTextureUrlHash("a3b183b148b9b4e2b158334aff3b5bb6c2c2dbbc4d67f76a7be856687a2b623");
-
-            setButton(41, GuiUtils.createButtonItem(discordButtonItem,
-                            this.plugin.getLocale().getMessage("gui.overview.discord").getMessage(),
-                            this.plugin.getLocale().getMessage("gui.overview.discordlore").getMessageLines('|')),
-                    (event) -> {
-                        this.plugin.getLocale().newMessage("&9https://songoda.com/discord").sendPrefixedMessage(this.player);
-                        exit();
-                    });
-        }
     }
 
     public enum Color {

@@ -15,28 +15,22 @@ public class Head {
     private int id;
     private String name = null;
     private String url = null;
-    private String pack = null;
-    private byte staffPicked = 0;
     private final boolean local;
 
     private Category category;
 
-    public Head(String name, String url, Category category, boolean local, String pack, byte staffPicked) {
+    public Head(String name, String url, Category category, boolean local) {
         this.name = name;
         this.url = url;
         this.category = category;
-        this.pack = pack;
-        this.staffPicked = staffPicked;
         this.local = local;
     }
 
-    public Head(int id, String name, String url, Category category, boolean local, String pack, byte staffPicked) {
+    public Head(int id, String name, String url, Category category, boolean local) {
         this.id = id;
         this.name = name;
         this.url = url;
         this.category = category;
-        this.pack = pack;
-        this.staffPicked = staffPicked;
         this.local = local;
     }
 
@@ -55,10 +49,6 @@ public class Head {
 
     public String getName() {
         return this.name;
-    }
-
-    public String getPack() {
-        return this.pack;
     }
 
     public void setName(String name) {
@@ -96,10 +86,6 @@ public class Head {
         return this.category;
     }
 
-    public byte getStaffPicked() {
-        return this.staffPicked;
-    }
-
     public boolean isLocal() {
         return this.local;
     }
@@ -113,7 +99,7 @@ public class Head {
     }
 
     public ItemStack asItemStack(boolean favorite, boolean free) {
-        ItemStack skull = SkullItemCreator.byTextureUrl(this.url);
+        ItemStack skull = createSkullAndAutoDetectInput(getUrl());
         ItemMeta meta = skull.getItemMeta();
         meta.setDisplayName(getHeadItemName(favorite));
         meta.setLore(getHeadItemLore(free));
@@ -130,9 +116,6 @@ public class Head {
         EpicHeads plugin = EpicHeads.getInstance();
         double cost = Settings.HEAD_COST.getDouble();
         List<String> lore = new ArrayList<>();
-        if (this.staffPicked == 1) {
-            lore.add(plugin.getLocale().getMessage("general.head.staffpicked").toText());
-        }
         lore.add(plugin.getLocale().getMessage("general.head.id")
                 .processPlaceholder("id", this.id).toText());
         if (!free) {
@@ -169,10 +152,18 @@ public class Head {
                 "id=" + this.id +
                 ", name='" + this.name + '\'' +
                 ", URL='" + this.url + '\'' +
-                ", pack='" + this.pack + '\'' +
-                ", staffPicked=" + this.staffPicked +
                 ", local=" + this.local +
                 ", category=" + this.category +
                 '}';
+    }
+
+    private ItemStack createSkullAndAutoDetectInput(String urlThatIsNotInFactAnUrl) {
+        if (urlThatIsNotInFactAnUrl.startsWith("http://") || urlThatIsNotInFactAnUrl.startsWith("https://")) {
+            return SkullItemCreator.byTextureUrl(urlThatIsNotInFactAnUrl);
+        }
+        if (urlThatIsNotInFactAnUrl.matches("[A-Za-z0-9+/-]{100,}={0,3}")) {
+            return SkullItemCreator.byTextureValue(urlThatIsNotInFactAnUrl);
+        }
+        return SkullItemCreator.byTextureUrlHash(urlThatIsNotInFactAnUrl);
     }
 }

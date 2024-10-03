@@ -77,7 +77,6 @@ public class HeadManager {
     public List<Head> getHeads() {
         return Collections.unmodifiableList(Stream.concat(this.registeredHeads.stream(), this.localRegisteredHeads.stream())
                 .sorted(Comparator.comparing(Head::getName))
-                .sorted(Comparator.comparingInt(head -> (head.getStaffPicked() == 1 ? 0 : 1)))
                 .collect(Collectors.toList()));
     }
 
@@ -108,22 +107,6 @@ public class HeadManager {
 
     public Set<Head> getDisabledHeads() {
         return Collections.unmodifiableSet(this.disabledHeads);
-    }
-
-    public List<Head> getLatestPack() {
-        List<Head> heads = getHeads().stream().sorted(Comparator.comparingInt(Head::getId)).filter(head -> head.getPack() != null).collect(Collectors.toList());
-
-        Collections.reverse(heads);
-
-        if (heads.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        String latestPack = heads.get(0).getPack();
-
-        heads = heads.stream().filter(head -> head.getPack().equals(latestPack)).collect(Collectors.toList());
-
-        return heads;
     }
 
     public void removeLocalHead(Head head) {

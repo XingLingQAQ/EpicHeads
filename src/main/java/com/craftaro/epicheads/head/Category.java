@@ -6,23 +6,13 @@ import java.util.Objects;
 
 public class Category {
     private final String name;
-    private final boolean latestPack;
 
     public Category(String name) {
-        this(name, false);
-    }
-
-    public Category(String name, boolean latestPack) {
         this.name = name;
-        this.latestPack = latestPack;
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public boolean isLatestPack() {
-        return this.latestPack;
     }
 
     public int getCount() {
@@ -47,12 +37,12 @@ public class Category {
 
         String comparableThisName = this.name != null ? this.name.toLowerCase() : null;
         String comparableCategoryName = category.name != null ? category.name.toLowerCase() : null;
-        return this.latestPack == category.latestPack && Objects.equals(comparableThisName, comparableCategoryName);
+        return Objects.equals(comparableThisName, comparableCategoryName);
     }
 
     @Override
     public int hashCode() {
         String name = this.name != null ? this.name.toLowerCase() : null;
-        return Objects.hash(name, this.latestPack);
+        return Objects.hash(name);
     }
 }

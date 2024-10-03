@@ -1,12 +1,12 @@
 package com.craftaro.epicheads.listeners;
 
 import com.craftaro.core.nms.Nms;
+import com.craftaro.core.utils.HeadType;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.settings.Settings;
-import com.craftaro.epicheads.utils.HeadType;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class DeathListeners implements Listener {
                 Head head = new Head(-1, TextUtils.formatText(event.getEntity().getType().name().toLowerCase()
                         .replace("_", " "), true),
                         HeadType.valueOf(event.getEntity().getType().name()).getUrl(),
-                        null, true, null, (byte) 0);
+                        null, true);
                 itemNew = head.asItemStack();
             }
             if (itemNew == null) {

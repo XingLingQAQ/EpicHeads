@@ -10,16 +10,7 @@ import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.PluginHook;
 import com.craftaro.core.hooks.economies.Economy;
-import com.craftaro.epicheads.commands.CommandAdd;
-import com.craftaro.epicheads.commands.CommandBase64;
-import com.craftaro.epicheads.commands.CommandEpicHeads;
-import com.craftaro.epicheads.commands.CommandGive;
-import com.craftaro.epicheads.commands.CommandGiveToken;
-import com.craftaro.epicheads.commands.CommandHelp;
-import com.craftaro.epicheads.commands.CommandReload;
-import com.craftaro.epicheads.commands.CommandSearch;
-import com.craftaro.epicheads.commands.CommandSettings;
-import com.craftaro.epicheads.commands.CommandUrl;
+import com.craftaro.epicheads.commands.*;
 import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.database.migrations._1_InitialMigration;
 import com.craftaro.epicheads.database.migrations._2_FixAutoIncrementMigration;
@@ -45,14 +36,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -133,12 +117,6 @@ public class EpicHeads extends SongodaPlugin {
         pluginManager.registerEvents(new ItemListeners(this), this);
         pluginManager.registerEvents(new LoginListeners(this), this);
 
-        // Download Heads
-        downloadHeads();
-
-        // Load Heads
-        loadHeads();
-
         int timeout = Settings.AUTOSAVE.getInt() * 60 * 20;
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, DataHelper::saveAllPlayers, timeout, timeout);
     }
@@ -153,6 +131,13 @@ public class EpicHeads extends SongodaPlugin {
         DataHelper.init(this.dataManager);
 
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+
+            // Download Heads
+            downloadHeads();
+
+            // Load Heads
+            loadHeads();
+
             // Legacy data! Yay!
             File folder = getDataFolder();
             File dataFile = new File(folder, "data.yml");
@@ -189,9 +174,7 @@ public class EpicHeads extends SongodaPlugin {
                                 row.get("name").asString(),
                                 row.get("url").asString(),
                                 category,
-                                true,
-                                null,
-                                (byte) 0);
+                                true);
 
                         DataHelper.createLocalHead(head);
                     }
@@ -232,15 +215,49 @@ public class EpicHeads extends SongodaPlugin {
     }
 
     private void downloadHeads() {
+        String[] categories = new String[]{
+                "alphabet",
+                "animals",
+                "blocks",
+                "decoration",
+                "food-drinks",
+                "humans",
+                "humanoid",
+                "miscellaneous",
+                "monsters",
+                "plants"
+        };
+
+        JSONParser parser = new JSONParser();
+        JSONArray jsonArray = new JSONArray();
+
+        int idCounter = 1;
+
         try {
-            InputStream is = new URL("https://craftaro.github.io/EpicHeads/heads.json").openStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            String jsonText = readAll(rd);
-            JSONParser parser = new JSONParser();
-            JSONArray json = (JSONArray) parser.parse(jsonText);
+            for (String category : categories) {
+                getLogger().info("Downloading data for " + category + "...");
+                String apiUrl = "https://minecraft-heads.com/scripts/api.php?cat=" + category + "&tags=true";
+                InputStream is = new URL(apiUrl).openStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+                String jsonText = readAll(rd);
+                JSONArray jsonCategoryArray = (JSONArray) parser.parse(jsonText);
+
+                for (Object o : jsonCategoryArray) {
+                    JSONObject entry = (JSONObject) o;
+                    String name = (String) entry.get("name");
+                    String value = (String) entry.get("value");
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", name);
+                    jsonObject.put("id", Integer.toString(idCounter++));
+                    jsonObject.put("url", value);
+                    jsonObject.put("category", category);
+                    jsonArray.add(jsonObject);
+                }
+            }
 
             try (FileWriter file = new FileWriter(new File(getDataFolder(), "heads.json"))) {
-                file.write(json.toJSONString());
+                file.write(jsonArray.toJSONString());
             }
         } catch (Exception ex) {
             getLogger().warning("Failed to download heads: " + ex.getMessage());
@@ -250,7 +267,6 @@ public class EpicHeads extends SongodaPlugin {
     private boolean loadHeads() {
         try {
             this.headManager.clear();
-            this.headManager.addCategory(new Category(getLocale().getMessage("general.word.latestpack").toText(), true));
 
             JSONParser parser = new JSONParser();
             JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(getDataFolder() + "/heads.json"));
@@ -264,7 +280,7 @@ public class EpicHeads extends SongodaPlugin {
                     continue;
                 }
 
-                String categoryName = (String) jsonObject.get("tags");
+                String categoryName = (String) jsonObject.get("category");
                 Category category = this.headManager.getOrCreateCategoryByName(categoryName);
 
                 Head head = new Head(
@@ -272,9 +288,7 @@ public class EpicHeads extends SongodaPlugin {
                         headName,
                         (String) jsonObject.get("url"),
                         category,
-                        false,
-                        headPack,
-                        Byte.parseByte((String) jsonObject.get("staff_picked"))
+                        false
                 );
                 this.headManager.addHead(head);
             }

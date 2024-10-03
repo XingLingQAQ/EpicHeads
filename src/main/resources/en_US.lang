@@ -9,9 +9,6 @@ general:
     favorites: Favorites
     everyone: everyone
     playerheads: Player Heads
-    latestpack: Latest Pack
-  phrase:
-    latestpack: Latest Pack
   search:
     global: '&6Enter your search query.'
     refine: '&6Enter a search term to refine your search.'
@@ -35,7 +32,6 @@ gui:
     search: '&a&lSearch'
     headname: '&c&l%name%'
     headlore: '&e%count% heads'
-    packlore: '&e%pack%'
     viewfavorites: '&6&lView Favorites'
     favoriteslore: '&8Shift click any head|&8to save as a favorite.'
     discord: '&9&lDiscord'

@@ -143,9 +143,7 @@ public class DataHelper {
                                     name,
                                     url,
                                     EpicHeads.getInstance().getHeadManager().getOrCreateCategoryByName(categoryString),
-                                    true,
-                                    null,
-                                    (byte) 0);
+                                    true);
 
                             heads.add(head);
                         });
