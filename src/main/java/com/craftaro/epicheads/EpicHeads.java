@@ -10,16 +10,7 @@ import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.PluginHook;
 import com.craftaro.core.hooks.economies.Economy;
-import com.craftaro.epicheads.commands.CommandAdd;
-import com.craftaro.epicheads.commands.CommandBase64;
-import com.craftaro.epicheads.commands.CommandEpicHeads;
-import com.craftaro.epicheads.commands.CommandGive;
-import com.craftaro.epicheads.commands.CommandGiveToken;
-import com.craftaro.epicheads.commands.CommandHelp;
-import com.craftaro.epicheads.commands.CommandReload;
-import com.craftaro.epicheads.commands.CommandSearch;
-import com.craftaro.epicheads.commands.CommandSettings;
-import com.craftaro.epicheads.commands.CommandUrl;
+import com.craftaro.epicheads.commands.*;
 import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.database.migrations._1_InitialMigration;
 import com.craftaro.epicheads.database.migrations._2_FixAutoIncrementMigration;
@@ -45,18 +36,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -134,12 +117,6 @@ public class EpicHeads extends SongodaPlugin {
         pluginManager.registerEvents(new ItemListeners(this), this);
         pluginManager.registerEvents(new LoginListeners(this), this);
 
-        // Download Heads
-        downloadHeads();
-
-        // Load Heads
-        loadHeads();
-
         int timeout = Settings.AUTOSAVE.getInt() * 60 * 20;
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, DataHelper::saveAllPlayers, timeout, timeout);
     }
@@ -154,6 +131,13 @@ public class EpicHeads extends SongodaPlugin {
         DataHelper.init(this.dataManager);
 
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+
+            // Download Heads
+            downloadHeads();
+
+            // Load Heads
+            loadHeads();
+
             // Legacy data! Yay!
             File folder = getDataFolder();
             File dataFile = new File(folder, "data.yml");
